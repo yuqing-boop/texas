@@ -1164,36 +1164,61 @@ body {
   overflow: hidden;
 }
 
-/* CALL: green pill (browser preview) */
-.human-control-actions-arc .btn.btn-call {
-  background-color: rgba(101, 191, 69, 1);
-  border-color: transparent;
-  color: rgba(75, 236, 161, 1);
-}
-.human-control-actions-arc .btn.btn-call:hover:not(:disabled) {
-  background-color: rgba(101, 191, 69, 1);
-  border-color: transparent;
-  color: rgba(75, 236, 161, 1);
-}
-.human-control-actions-arc .btn.btn-call:active:not(:disabled) {
-  border-color: transparent;
-  background-color: rgba(90, 175, 58, 1);
-  color: rgba(75, 236, 161, 1);
-}
-
-/* FOLD: no border (browser preview) */
+/* FOLD: forest green */
 .human-control-actions-arc .btn.btn-fold {
+  background-color: #5d7557;
   border-width: 0;
   border-style: none;
   border-image: none;
 }
+.human-control-actions-arc .btn.btn-fold:hover:not(:disabled) {
+  background-color: #6e8a68;
+}
+.human-control-actions-arc .btn.btn-fold:active:not(:disabled) {
+  background-color: #4e6348;
+}
 
-/* ALL-IN: no border (browser preview) */
+/* CALL: coral/salmon */
+.human-control-actions-arc .btn.btn-call {
+  background-color: #f1866c;
+  border-color: transparent;
+  color: #2a0f00;
+}
+.human-control-actions-arc .btn.btn-call:hover:not(:disabled) {
+  background-color: #f49580;
+  border-color: transparent;
+  color: #2a0f00;
+}
+.human-control-actions-arc .btn.btn-call:active:not(:disabled) {
+  border-color: transparent;
+  background-color: #d97058;
+  color: #2a0f00;
+}
+
+/* RAISE: burnt orange */
+.human-control-actions-arc .btn.btn-raise {
+  background-color: #d26730;
+}
+.human-control-actions-arc .btn.btn-raise:hover:not(:disabled) {
+  background-color: #de7a45;
+}
+.human-control-actions-arc .btn.btn-raise:active:not(:disabled) {
+  background-color: #b85825;
+}
+
+/* ALL-IN: red */
 .human-control-actions-arc .btn.btn-allin {
+  background-color: #e55d4d;
   border-width: 0;
   border-style: none;
   border-color: rgba(0, 0, 0, 0);
   border-image: none;
+}
+.human-control-actions-arc .btn.btn-allin:hover:not(:disabled) {
+  background-color: #ea7265;
+}
+.human-control-actions-arc .btn.btn-allin:active:not(:disabled) {
+  background-color: #cc4a3b;
 }
 
 .btn-deal  { color: var(--title-bg); font-size: 10px; }
@@ -1281,6 +1306,11 @@ input[type='range'] {
   margin-bottom: 5px;
   position: relative;
   border-radius: var(--panel-radius-sm);
+}
+
+/* Match active-turn ring (glow-active): portrait void while deciding */
+.portrait-frame.portrait-frame--thinking {
+  background: #d366a3;
 }
 
 /* AI: square portrait — hole cards moved to the side column */

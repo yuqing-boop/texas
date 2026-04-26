@@ -145,15 +145,15 @@ export function InfoPanel({
           }}
         >
           {[
-            { label: 'YOUR CHIPS', value: `$${humanChips.toLocaleString()}`, color: '#00FF00' },
-            { label: 'BLINDS',     value: `${smallBlind}/${bigBlind}`,       color: '#AAAAAA' },
-            { label: 'HAND #',     value: String(handNumber),                color: '#AAAAAA' },
+            { label: 'YOUR CHIPS', value: `$${humanChips.toLocaleString()}` },
+            { label: 'BLINDS',     value: `${smallBlind}/${bigBlind}` },
+            { label: 'HAND #',     value: String(handNumber) },
           ].map((row) => (
             <div key={row.label} style={statRowStyle}>
-              <span style={{ fontFamily: 'var(--font-arcade)', fontSize: 16, color: '#666666' }}>
+              <span style={{ fontFamily: 'var(--font-arcade)', fontSize: 13, color: '#666666' }}>
                 {row.label}
               </span>
-              <span style={{ fontFamily: 'var(--font-arcade)', fontSize: 7, color: row.color }}>
+              <span style={{ fontFamily: 'var(--font-arcade)', fontSize: 12, color: '#7522A0' }}>
                 {row.value}
               </span>
             </div>
@@ -166,12 +166,12 @@ export function InfoPanel({
               padding: '3px 5px',
             }}
           >
-            <span style={{ fontFamily: 'var(--font-arcade)', fontSize: 16, color: '#666666' }}>
+            <span style={{ fontFamily: 'var(--font-arcade)', fontSize: 13, color: '#666666' }}>
               {isAIThinking ? 'THINKING' : 'ACTING'}
             </span>
             <span
               className={isAIThinking ? 'blink' : ''}
-              style={{ fontFamily: 'var(--font-arcade)', fontSize: 8, color: '#00FFFF' }}
+              style={{ fontFamily: 'var(--font-arcade)', fontSize: 12, color: '#7522A0' }}
             >
               {activePlayerName || '—'}
             </span>

@@ -506,7 +506,13 @@ export function PlayerPanel({
         <div className="os-body" style={{ padding: 6 }}>
         {/* Portrait frame — sunken inset */}
         <div
-          className={['portrait-frame', !isHuman ? 'ai-portrait-frame--ai' : ''].filter(Boolean).join(' ')}
+          className={[
+            'portrait-frame',
+            !isHuman ? 'ai-portrait-frame--ai' : '',
+            isActive && !player.folded ? 'portrait-frame--thinking' : '',
+          ]
+            .filter(Boolean)
+            .join(' ')}
           ref={!isHuman ? portraitRef : undefined}
         >
           {!isHuman ? (
