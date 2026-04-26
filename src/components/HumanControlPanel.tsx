@@ -17,6 +17,8 @@ interface HumanControlPanelProps {
   disabled: boolean;
   onAction: (action: PlayerAction) => void;
   onNewGame: () => void;
+  /** Draw attention when play only continues after clicking NEW GAME */
+  promptNewGame?: boolean;
 }
 
 export function HumanControlPanel({
@@ -33,6 +35,7 @@ export function HumanControlPanel({
   disabled,
   onAction,
   onNewGame,
+  promptNewGame = false,
 }: HumanControlPanelProps) {
   const isBust = player.chips === 0;
   const isIdle = !canCheck && !canCall && !canFold && !disabled;
@@ -78,9 +81,18 @@ export function HumanControlPanel({
         <div className="human-control-oval-lobe-row" aria-label="New game">
           <button
             type="button"
-            className="btn btn-call human-control-panel-lobe-btn human-control-panel-new-game btn-new-game-oval"
+            className={[
+              'btn',
+              'btn-call',
+              'human-control-panel-lobe-btn',
+              'human-control-panel-new-game',
+              'btn-new-game-oval',
+              promptNewGame && 'btn-new-game-oval--prompt',
+            ]
+              .filter(Boolean)
+              .join(' ')}
             onClick={onNewGame}
-            title="Start a new hand"
+            title={promptNewGame ? 'Click to deal cards and start' : 'Start a new hand'}
           >
             NEW GAME
           </button>

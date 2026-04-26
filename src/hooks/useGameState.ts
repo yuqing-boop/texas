@@ -15,7 +15,6 @@ export const HUMAN_ID = 'human';
 const STARTING_CHIPS = 1000;
 const SMALL_BLIND    = 10;
 const AI_THINK_MS    = 2000;
-const NEXT_HAND_MS   = 2800;
 
 export interface AIProfile {
   id: string;
@@ -171,10 +170,9 @@ export interface UseGameStateReturn {
 export function useGameState(): UseGameStateReturn {
   const gameRef = useRef<TexasHoldemGame>(makeGame());
 
-  const [gameState, setGameState] = useState<GameState>(() => {
-    gameRef.current.startHand();
-    return { ...gameRef.current.getState() };
-  });
+  const [gameState, setGameState] = useState<GameState>(() => ({
+    ...gameRef.current.getState(),
+  }));
 
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [isAIThinking, setIsAIThinking] = useState(false);
@@ -215,24 +213,7 @@ export function useGameState(): UseGameStateReturn {
     const state = gameState;
     const { phase } = state;
 
-    if (phase === 'waiting') {
-      gameRef.current.startHand();
-      sync();
-      return;
-    }
-
-    if (phase === 'handComplete') {
-      const humanBust = state.players.find((p) => p.id === HUMAN_ID)?.chips === 0;
-      const stillPlaying = state.players.filter((p) => p.chips > 0).length >= 2;
-      if (!stillPlaying || humanBust) {
-        return;
-      }
-      const t = setTimeout(() => {
-        gameRef.current.startHand();
-        sync();
-      }, NEXT_HAND_MS);
-      return () => clearTimeout(t);
-    }
+    if (phase === 'waiting' || phase === 'handComplete') return;
 
     if (!isActivePhase(phase)) return;
 
@@ -261,7 +242,15 @@ export function useGameState(): UseGameStateReturn {
   }, [gameState, pushChat, sync]);
 
   const restartGame = useCallback(() => {
-    gameRef.current = makeGame();
+    const s = gameRef.current.getState();
+    const humanBust = s.players.find((p) => p.id === HUMAN_ID)?.chips === 0;
+    const stillPlaying = s.players.filter((p) => p.chips > 0).length >= 2;
+    const preserveSession =
+      s.phase === 'waiting' ||
+      (s.phase === 'handComplete' && stillPlaying && !humanBust);
+    if (!preserveSession) {
+      gameRef.current = makeGame();
+    }
     gameRef.current.startHand();
     setChatMessages([]);
     setIsAIThinking(false);

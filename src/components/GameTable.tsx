@@ -280,6 +280,7 @@ export function GameTable({
                   disabled={!isHumanTurn || isAIThinking}
                   onAction={onAction}
                   onNewGame={onNewGame}
+                  promptNewGame={phase === 'waiting' || phase === 'handComplete'}
                 />
               </div>
             )}
