@@ -937,7 +937,7 @@ body {
   font-size: clamp(9px, 5.1cqi, 34px);
 }
 .community-board-cards .playing-card.board.face-down {
-  background-size: clamp(8px, 1.4cqi, 20px) clamp(8px, 1.4cqi, 20px);
+  background-size: clamp(3px) clamp(3px);
 }
 
 .playing-card.face-down {
@@ -946,7 +946,7 @@ body {
     var(--card-back-a) 0% 25%,
     var(--card-back-b) 0% 50%
   );
-  background-size: 10px 10px;
+  background-size: 15px 15px;
   border-color: var(--win-white) var(--win-darker) var(--win-darker) var(--win-white);
 }
 
