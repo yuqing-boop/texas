@@ -528,6 +528,20 @@ body {
 }
 
 /* Community area winner banner */
+.community-winner-anchor {
+  display: flex;
+  justify-content: center;
+  width: 220px;
+  height: 110px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Top-layer clone (see CommunityCards portal); keeps bevel + type crisp above AI panels */
+.community-winner-portal-root {
+  isolation: isolate;
+}
+
 .community-winner-box {
   border-radius: var(--panel-radius);
 }
