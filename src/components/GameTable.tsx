@@ -154,7 +154,7 @@ export function GameTable({
           <span>♠</span>
         </div>
         <div className="game-chrome-title__title">
-          <span>Texas Hold&apos;em — Surgery Simulation Interface</span>
+          <span>Now Let's Play Texas Hold&apos;em</span>
         </div>
       </div>
 
