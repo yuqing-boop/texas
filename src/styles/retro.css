@@ -31,8 +31,23 @@
   --chip-color:   #53530c;
   --win-color:    #e05da5;
   --fold-color:   #b80c5c;
-  --acting-color: #944dce;
+  --acting-color: #8b5f91;
   --allin-color:  #c57112;
+
+  /* Active turn — frame & panel faces centered on #a874ac (Win95-style highlight → shadow) */
+  --acting-frame-highlight: #f3ceff; /* outer top/left */
+  --acting-frame-light:     #c9a3cd; /* inset top/left */
+  --acting-frame-bg:        #a874ac; /* main surface */
+  --acting-frame-dark:      #7a5580; /* inset bottom/right */
+  --acting-frame-darker:    #4a3352; /* outer bottom/right */
+  --acting-ring:            #b45acf; /* retained for tab chrome refs */
+  /* Soft outer bloom + a slightly concrete near rim (still blurred, not a hard line) */
+  --acting-glow-near:  rgba(236, 218, 242, 0.82);
+  --acting-glow-inner: rgba(228, 204, 235, 0.64);
+  --acting-glow-mid:   rgba(184, 140, 196, 0.42);
+  --acting-glow-outer: rgba(168, 116, 172, 0.24);
+  --acting-glow-far:   rgba(139, 95, 145, 0.1);
+  --acting-glow:       rgba(168, 116, 172, 0.55); /* human control oval, legacy */
 
   /* Card */
   --card-bg:      #ecd3d6;
@@ -108,9 +123,23 @@
 }
 
 .human-control-panel-oval-outer--active {
-  filter: drop-shadow(0 0 1px rgba(255, 73, 164, 0.45))
-    drop-shadow(0 0 5px rgba(255, 27, 168, 0.32))
-    drop-shadow(0 0 8px rgba(255, 2, 78, 0.28));
+  filter: drop-shadow(0 0 2px rgba(168, 116, 172, 0.85))
+    drop-shadow(0 0 12px var(--acting-glow))
+    drop-shadow(0 0 22px rgba(74, 51, 82, 0.4));
+}
+
+.human-control-panel-oval-outer.human-control-panel-oval-outer--active::before {
+  background: var(--acting-frame-highlight);
+}
+
+.human-control-panel-oval-outer.human-control-panel-oval-outer--active::after {
+  background: var(--acting-frame-darker);
+}
+
+.human-control-panel-oval--active .human-control-slider-arc:not(.human-control-slider-arc--inactive) {
+  background: var(--acting-frame-light);
+  border-color: var(--acting-frame-dark) var(--acting-frame-light) var(--acting-frame-light) var(--acting-frame-dark);
+  box-shadow: inset var(--bevel-inset) var(--bevel-inset) 0 var(--acting-frame-darker);
 }
 
 /* Win95-style raised bevel that follows the blob outline.
@@ -188,6 +217,7 @@
 }
 
 .human-control-panel-oval.human-control-panel-oval--active {
+  background-color: var(--acting-frame-bg);
   box-shadow: none !important;
 }
 
@@ -527,12 +557,12 @@ body {
   border-radius: var(--panel-radius-sm);
 }
 
-/* Community area winner banner */
+/* Community area winner banner (2× layout footprint vs original 220×110) */
 .community-winner-anchor {
   display: flex;
   justify-content: center;
-  width: 220px;
-  height: 110px;
+  width: 440px;
+  height: 220px;
   max-width: 100%;
   box-sizing: border-box;
 }
@@ -549,7 +579,7 @@ body {
 .community-winner-box__names {
   font-family: var(--font-arcade);
   font-weight: 400;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
 }
 
 /* GameTable grid column 2: one track width, but each row can cap its own content */
@@ -642,13 +672,23 @@ body {
   border-radius: var(--panel-radius-sm);
 }
 
-/* Active / turn highlight — pink ring + outer glow (8px blur, 5px spread) */
-.glow-active {
+/* Active / turn — lilac frame + near rim + softened outer bloom */
+.player-panel__window.glow-active {
+  background: var(--acting-frame-bg);
+  border-color: var(--acting-frame-highlight) var(--acting-frame-darker) var(--acting-frame-darker)
+    var(--acting-frame-highlight);
   box-shadow:
-    inset  var(--bevel-inset)  var(--bevel-inset) 0 var(--win-light),
-    inset var(--bevel-inset-neg) var(--bevel-inset-neg) 0 var(--win-dark),
-    0 0 0 4px #fa52ff,
-    0 0 8px 5px rgba(250, 82, 255, 0.55);
+    inset var(--bevel-inset) var(--bevel-inset) 0 var(--acting-frame-light),
+    inset var(--bevel-inset-neg) var(--bevel-inset-neg) 0 var(--acting-frame-dark),
+    0 0 5px 4px var(--acting-glow-near),
+    0 0 14px 12px var(--acting-glow-inner),
+    0 0 30px 24px var(--acting-glow-mid),
+    0 0 52px 32px var(--acting-glow-outer),
+    0 0 76px 52px var(--acting-glow-far);
+}
+
+.player-panel__window.glow-active:not(.os-window--ai) .os-title-bar {
+  background: linear-gradient(90deg, var(--acting-frame-darker) 0%, var(--acting-frame-bg) 92%);
 }
 
 /*
@@ -679,28 +719,53 @@ body {
     inset var(--bevel-inset-neg) var(--bevel-inset-neg) 0 var(--win-dark);
 }
 
-.os-window--ai.glow-active:not(.os-window--fuse-tab-right):not(.os-window--fuse-tab-left) {
+.player-panel__window.os-window--ai.glow-active:not(.os-window--fuse-tab-right):not(.os-window--fuse-tab-left) {
   box-shadow:
-    inset var(--bevel-inset) var(--bevel-inset) 0 var(--win-light),
-    inset var(--bevel-inset-neg) var(--bevel-inset-neg) 0 var(--win-dark),
-    0 0 0 6px #fa52ff,
-    0 0 8px 5px rgba(250, 82, 255, 0.55);
+    inset var(--bevel-inset) var(--bevel-inset) 0 var(--acting-frame-light),
+    inset var(--bevel-inset-neg) var(--bevel-inset-neg) 0 var(--acting-frame-dark),
+    0 0 6px 4px var(--acting-glow-near),
+    0 0 16px 12px var(--acting-glow-inner),
+    0 0 34px 26px var(--acting-glow-mid),
+    0 0 56px 34px var(--acting-glow-outer),
+    0 0 82px 54px var(--acting-glow-far);
 }
 
-.os-window--ai.os-window--fuse-tab-right.glow-active {
+.player-panel__window.os-window--ai.os-window--fuse-tab-right.glow-active {
   box-shadow:
-    inset var(--bevel-inset) 0 0 0 var(--win-light),
-    inset 0 var(--bevel-inset-neg) 0 0 var(--win-dark),
-    0 0 0 6px #fa52ff,
-    0 0 8px 5px rgba(250, 82, 255, 0.55);
+    inset var(--bevel-inset) 0 0 0 var(--acting-frame-light),
+    inset 0 var(--bevel-inset-neg) 0 0 var(--acting-frame-dark),
+    0 0 6px 4px var(--acting-glow-near),
+    0 0 16px 12px var(--acting-glow-inner),
+    0 0 34px 26px var(--acting-glow-mid),
+    0 0 56px 44px var(--acting-glow-outer),
+    0 0 82px 54px var(--acting-glow-far);
 }
 
-.os-window--ai.os-window--fuse-tab-left.glow-active {
+.player-panel__window.os-window--ai.os-window--fuse-tab-left.glow-active {
   box-shadow:
-    inset 0 var(--bevel-inset) 0 0 var(--win-light),
-    inset var(--bevel-inset-neg) var(--bevel-inset-neg) 0 var(--win-dark),
-    0 0 0 6px #fa52ff,
-    0 0 8px 5px rgba(250, 82, 255, 0.55);
+    inset 0 var(--bevel-inset) 0 0 var(--acting-frame-light),
+    inset var(--bevel-inset-neg) var(--bevel-inset-neg) 0 var(--acting-frame-dark),
+    0 0 6px 4px var(--acting-glow-near),
+    0 0 16px 12px var(--acting-glow-inner),
+    0 0 34px 26px var(--acting-glow-mid),
+    0 0 56px 34px var(--acting-glow-outer),
+    0 0 82px 54px var(--acting-glow-far);
+}
+
+/* AI name tab + side action strip match acting chrome while it’s their turn */
+.player-panel:has(.player-panel__window.glow-active) .ai-name-top-tab--fused {
+  background: var(--acting-frame-light);
+  border-color: var(--acting-frame-highlight) var(--acting-frame-darker) transparent var(--acting-frame-highlight);
+}
+
+.player-panel:has(.player-panel__window.glow-active) .action-side-subpanel--fused-to-right {
+  background: var(--acting-frame-light);
+  border-color: var(--acting-frame-highlight) var(--acting-frame-darker) var(--acting-frame-darker) transparent;
+}
+
+.player-panel:has(.player-panel__window.glow-active) .action-side-subpanel--fused-to-left {
+  background: var(--acting-frame-light);
+  border-color: var(--acting-frame-highlight) transparent var(--acting-frame-darker) var(--acting-frame-highlight);
 }
 
 /* AI name: folder tab above the main frame (fused to bottom edge, no bevel on join) */
@@ -876,7 +941,7 @@ body {
 /* Per-character speech (PlayerPanel) — same DotGothic / --font-pixel and +3px tier as rest of UI */
 .character-dialogue {
   font-family: var(--font-pixel);
-  font-size: 12px;
+  font-size: 20px;
   line-height: 1.5;
 }
 
@@ -1390,9 +1455,13 @@ input[type='range'] {
   border-radius: var(--panel-radius-sm);
 }
 
-/* Match active-turn ring (glow-active): portrait void while deciding */
+/* Active-turn portrait inset — sunken bevel in acting palette */
 .portrait-frame.portrait-frame--thinking {
-  background: #d366a3;
+  background: #c8a5cb;
+  background: color-mix(in srgb, var(--acting-frame-bg) 72%, var(--acting-frame-highlight));
+  border-color: var(--acting-frame-dark) var(--acting-frame-light) var(--acting-frame-light)
+    var(--acting-frame-dark);
+  box-shadow: inset var(--bevel-inset) var(--bevel-inset) 0 var(--acting-frame-darker);
 }
 
 /* AI: square portrait — hole cards moved to the side column */

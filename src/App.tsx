@@ -1,8 +1,25 @@
 import './styles/retro.css';
+import { useState, useEffect } from 'react';
 import { useGameState } from './hooks/useGameState';
 import { useReadymag } from './hooks/useReadymag';
 import { GameTable } from './components/GameTable';
 import { HUMAN_ID } from './hooks/useGameState';
+
+const DESIGN_W = 1280;
+const DESIGN_H = 960;
+
+function useViewportScale() {
+  const [scale, setScale] = useState(() =>
+    Math.min(window.innerWidth / DESIGN_W, window.innerHeight / DESIGN_H)
+  );
+  useEffect(() => {
+    const update = () =>
+      setScale(Math.min(window.innerWidth / DESIGN_W, window.innerHeight / DESIGN_H));
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+  return scale;
+}
 
 function App() {
   const {
@@ -22,6 +39,8 @@ function App() {
 
   useReadymag(gameState, HUMAN_ID);
 
+  const scale = useViewportScale();
+
   return (
     <div
       style={{
@@ -33,33 +52,33 @@ function App() {
         overflow: 'hidden',
       }}
     >
-      {/* 4:3 “safe” area: always fits; letterboxes on wider/taller viewports */}
+      {/* Fixed design canvas scaled to fit the viewport; all px values stay at 1x */}
       <div
         className="game-screen"
         style={{
-          width: 'min(100vw, calc(100vh * 4 / 3))',
-          height: 'min(100vh, calc(100vw * 3 / 4))',
-          maxWidth: '100%',
-          maxHeight: '100%',
+          width: DESIGN_W,
+          height: DESIGN_H,
+          transform: `scale(${scale})`,
+          transformOrigin: 'center center',
           display: 'flex',
           flexDirection: 'column',
-          minHeight: 0,
+          flexShrink: 0,
         }}
       >
-      <GameTable
-        gameState={gameState}
-        isHumanTurn={isHumanTurn}
-        isAIThinking={isAIThinking}
-        canCheck={canCheck}
-        canCall={canCall}
-        canRaise={canRaise}
-        canFold={canFold}
-        toCall={toCall}
-        chatMessages={chatMessages}
-        latestExpressions={latestExpressions}
-        onAction={humanAction}
-        onNewGame={restartGame}
-      />
+        <GameTable
+          gameState={gameState}
+          isHumanTurn={isHumanTurn}
+          isAIThinking={isAIThinking}
+          canCheck={canCheck}
+          canCall={canCall}
+          canRaise={canRaise}
+          canFold={canFold}
+          toCall={toCall}
+          chatMessages={chatMessages}
+          latestExpressions={latestExpressions}
+          onAction={humanAction}
+          onNewGame={restartGame}
+        />
       </div>
     </div>
   );

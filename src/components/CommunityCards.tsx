@@ -29,7 +29,7 @@ const WINNER_BOX_STYLE: CSSProperties = {
   borderWidth: 'var(--bevel-outer)',
   borderColor: 'rgb(88, 50, 143) rgb(160, 120, 200) rgb(160, 120, 200) rgb(88, 50, 143)',
   background: 'rgba(153, 85, 216, 0.75)',
-  padding: '12px 16px',
+  padding: '24px 32px',
   textAlign: 'center',
   maxWidth: '100%',
 };
@@ -46,10 +46,10 @@ function CommunityWinnerInner({
       <div
         style={{
           fontFamily: 'var(--font-pixel)',
-          fontSize: 16,
+          fontSize: 32,
           color: '#1eb39e',
-          marginBottom: 4,
-          letterSpacing: 4,
+          marginBottom: 8,
+          letterSpacing: 8,
         }}
       >
         ★ WINNER ★
@@ -57,9 +57,9 @@ function CommunityWinnerInner({
       <div
         className="community-winner-box__names"
         style={{
-          fontSize: 16,
+          fontSize: 32,
           color: '#e32d8b',
-          marginBottom: 4,
+          marginBottom: 8,
           lineHeight: 1.4,
         }}
       >
@@ -70,7 +70,7 @@ function CommunityWinnerInner({
       <div
         style={{
           fontFamily: 'var(--font-pixel)',
-          fontSize: 14,
+          fontSize: 28,
           color: '#58328f',
         }}
       >

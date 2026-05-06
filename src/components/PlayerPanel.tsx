@@ -379,8 +379,8 @@ export function PlayerPanel({
   const portraitKey = isHuman ? 'human' : (aiProfile?.personality ?? player.id);
 
   const rootStyle: CSSProperties = {
-    minWidth: isHuman ? 138 : 154,
-    maxWidth: isHuman ? 172 : 204,
+    minWidth: isHuman ? 138 : 184,
+    maxWidth: isHuman ? 172 : 234,
     width: '100%',
     flexShrink: 0,
     position: 'relative',
@@ -610,8 +610,8 @@ export function PlayerPanel({
           style={{
             marginTop: 4,
             minHeight: 0,
-            maxHeight: 56,
-            padding: '3px 6px',
+            maxHeight: 76,
+            padding: '5px 16px',
             overflow: 'auto',
             color: latestDialogue ? '#b21d77' : '#58328f',
           }}
