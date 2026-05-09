@@ -23,6 +23,10 @@
 
   /* Content / text */
   --text-panel:   #1a24bb;
+  /* Small action/status lines (ALL-IN, BET, AI side tab) — same family as human chip readout */
+  --stat-note-text: rgba(117, 34, 160, 1);
+  --stat-note-weight: 800;
+  --stat-note-tracking: 0.14em;
   --text-dim:     #75229c;   /* deemphasized on mauve */
   --text-cyan:    #473bad;
   --text-bright:  #7a1992;
@@ -86,8 +90,12 @@
   --game-center-board-max: 960px; /* community row: up to this, or full column if narrower */
 
   /* HumanControlPanel action arc: circular FOLD / CHECK / CALL / RAISE / ALL-IN */
-  --human-action-arc-cell: 47px; /* was 62px (−15px diameter) */
+  --human-action-arc-cell: 52px;
   --human-action-arc-gap: 4px;
+
+  /* Arcade hint arrows (NEW GAME / your turn) — pixel outline + pink fill */
+  --arcade-hint-pink: #ffc8e8;
+  --arcade-hint-pink-deep: #9d205c;
 }
 
 /* ─── Base Reset ───────────────────────────────────────────────────────────── */
@@ -249,7 +257,8 @@
   flex: 1 1 auto;
   min-width: 0;
   max-width: 100%;
-  width: 260px;
+  /* Wide enough for “BUSTED — NO CHIPS LEFT” + stats/slider on one row */
+  width: 300px;
   margin: 15px 0 15px 30px;
   padding: 0 10px;
   box-sizing: border-box;
@@ -300,7 +309,8 @@
   max-width: 100%;
   box-sizing: border-box;
   pointer-events: auto;
-  height: 100px;
+  min-height: 124px;
+  height: auto;
   margin: 30px -20px;
   padding: 20px 5px 20px 20px;
   overflow: visible;
@@ -358,23 +368,27 @@
   min-width: 0;
 }
 
-/* Raise strip tucked under chip stats — compact track, not full blob width */
+/* Raise strip under chip stats — width matches stats card; track uses remaining flex space */
 .human-control-slider-arc--embedded {
   width: 100%;
-  max-width: 152px;
-  margin-left: 0;
+  max-width: 280px;
+  align-self: stretch;
+  margin-left: 10px;
   margin-right: 0;
   margin-top: 4px;
   margin-bottom: 2px;
+  padding: 3px 5px;
   justify-content: flex-start;
-  align-items: flex-end;
-  gap: 4px;
+  align-items: center;
+  gap: 6px;
   border-bottom-left-radius: var(--panel-radius-sm) !important;
   border-bottom-right-radius: var(--panel-radius-sm) !important;
 }
 
 .human-control-slider-arc--embedded input[type='range'] {
-  max-width: 72px;
+  flex: 1 1 auto;
+  min-width: 88px;
+  max-width: none;
 }
 
 /* Reserved raise strip when raising is N/A: same box, pink/muted, non-interactive */
@@ -1231,6 +1245,93 @@ body {
   opacity: 1;
   filter: none;
 }
+
+/* Floating arcade arrows — parent .human-control-panel-oval-outer is overflow-visible */
+.arcade-hint-arrow {
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+}
+.arcade-hint-arrow__bob {
+  will-change: transform;
+}
+.arcade-hint-arrow__stack {
+  display: flex;
+}
+.arcade-hint-arrow__stack--down {
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  line-height: 0.55;
+}
+/* NEW GAME: double stack + scales with larger glyphs */
+.arcade-hint-arrow__stack--prominent {
+  line-height: 0.45;
+  filter: drop-shadow(0 3px 6px rgba(157, 32, 92, 0.55));
+}
+.arcade-hint-arrow__glyph {
+  font-family: var(--font-arcade);
+  font-size: 10px;
+  line-height: 1;
+  color: var(--arcade-hint-pink);
+  text-shadow:
+    1px 0 0 var(--arcade-hint-pink-deep),
+    -1px 0 0 var(--arcade-hint-pink-deep),
+    0 1px 0 var(--arcade-hint-pink-deep),
+    0 -1px 0 var(--arcade-hint-pink-deep);
+  image-rendering: pixelated;
+}
+
+@keyframes arcade-hint-bob-down {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(7px);
+  }
+}
+
+/* Vertical-only bob — parent handles horizontal centering */
+@keyframes arcade-hint-bob-y {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+}
+
+/* Above NEW GAME: lobe row is right:0 margin-right:25px width:62px inside the same container,
+   so button center = 100% − 25px − 31px = 56px from right edge */
+.arcade-hint-arrow--new-game {
+  left: calc(100% - 56px);
+  top: -50px;
+  transform: translateX(-50%);
+  width: max-content;
+  height: 0;
+}
+.arcade-hint-arrow--new-game .arcade-hint-arrow__bob {
+  animation: arcade-hint-bob-y 1.05s ease-in-out infinite;
+}
+.arcade-hint-arrow--new-game .arcade-hint-arrow__glyph {
+  display: inline-block;
+  font-size: 20px;
+  color: #ffd6ef;
+  /* stretch each triangle ~2× wider so it reads as a big chunky arcade arrow */
+  transform: scaleX(2.2);
+  transform-origin: center;
+  text-shadow:
+    2px 0 0 var(--arcade-hint-pink-deep),
+    -2px 0 0 var(--arcade-hint-pink-deep),
+    0 2px 0 var(--arcade-hint-pink-deep),
+    0 -2px 0 var(--arcade-hint-pink-deep),
+    1px 1px 0 var(--arcade-hint-pink-deep),
+    -1px -1px 0 var(--arcade-hint-pink-deep),
+    1px -1px 0 var(--arcade-hint-pink-deep),
+    -1px 1px 0 var(--arcade-hint-pink-deep),
+    0 0 14px rgba(255, 182, 220, 1);
+}
+
 .human-control-panel-oval .human-control-panel-lobe-btn.human-control-action--unavailable:disabled,
 .human-control-panel-oval .human-control-panel-lobe-btn.human-control-action--unavailable {
   color: rgba(86, 31, 85, 0.65) !important;
@@ -1261,8 +1362,10 @@ body {
   background-image: none;
   box-shadow: inset 4px 4px 4px 0px rgba(255, 255, 255, 0.3);
   font-family: var(--font-pixel);
-  font-size: 10px;
-  line-height: 1.1;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  line-height: 1.12;
   color: #2a0f00;
   white-space: normal;
   text-align: center;
@@ -1368,6 +1471,55 @@ body {
   background-color: #cc4a3b;
 }
 
+/* Your-turn glow pulse — applied to each available action button when it's the human's turn */
+@keyframes btn-turn-pulse {
+  0%, 100% {
+    background-color: var(--btn-turn-pulse-base);
+    box-shadow: inset 4px 4px 4px 0 rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    background-color: #ff2d8a;
+    box-shadow:
+      inset 4px 4px 4px 0 rgba(255, 255, 255, 0.5),
+      0 0 16px 6px rgba(255, 45, 138, 0.75),
+      0 0 32px 10px rgba(255, 45, 138, 0.35);
+  }
+}
+/* Each button colour is its base so the keyframe can interpolate back to it */
+.human-control-actions-arc .btn.btn-fold.btn-turn-pulse   { --btn-turn-pulse-base: #5d7557; }
+.human-control-actions-arc .btn.btn-check.btn-turn-pulse  { --btn-turn-pulse-base: rgba(255, 159, 26, 1); }
+.human-control-actions-arc .btn.btn-call.btn-turn-pulse   { --btn-turn-pulse-base: #f1866c; }
+.human-control-actions-arc .btn.btn-raise.btn-turn-pulse  { --btn-turn-pulse-base: #d26730; }
+.human-control-actions-arc .btn.btn-allin.btn-turn-pulse  { --btn-turn-pulse-base: #e55d4d; }
+.btn-turn-pulse {
+  animation: btn-turn-pulse 1.4s ease-in-out infinite;
+}
+.btn-turn-pulse:hover,
+.btn-turn-pulse:active {
+  animation: none;
+}
+
+/* Raise slider strip — same hot-pink flicker as action buttons */
+@keyframes slider-turn-pulse {
+  0%, 100% {
+    background: var(--win-bg);
+    box-shadow: inset var(--bevel-inset) var(--bevel-inset) 0 var(--win-darker);
+  }
+  50% {
+    background: #ff2d8a;
+    box-shadow:
+      inset var(--bevel-inset) var(--bevel-inset) 0 var(--win-darker),
+      0 0 14px 5px rgba(255, 45, 138, 0.7),
+      0 0 28px 8px rgba(255, 45, 138, 0.3);
+  }
+}
+.slider-turn-pulse {
+  animation: slider-turn-pulse 1.4s ease-in-out infinite;
+}
+.slider-turn-pulse:focus-within {
+  animation: none;
+}
+
 .btn-deal  { color: var(--title-bg); font-size: 10px; }
 
 /* Range input */
@@ -1375,6 +1527,18 @@ input[type='range'] {
   accent-color: var(--title-bg);
   cursor: pointer;
   height: 4px;
+}
+
+/* Bold purple stat / action captions (human oval, classic panel, AI side tab) */
+.stat-note-line {
+  color: var(--stat-note-text);
+  font-weight: var(--stat-note-weight);
+  letter-spacing: var(--stat-note-tracking);
+}
+
+/* Chip total: keep tracking tighter than caption lines */
+.human-control-stats-topline .stat-note-line {
+  letter-spacing: 0.06em;
 }
 
 /* ─── Chip Display ─────────────────────────────────────────────────────────── */

@@ -165,6 +165,8 @@ export interface UseGameStateReturn {
   humanAction: (action: PlayerAction) => void;
   latestExpressions: Record<string, ExpressionType>;
   restartGame: () => void;
+  /** ID of the AI that just acted; panel stays highlighted for ~1.5s after their dialogue appears */
+  lastActiveId: string | null;
 }
 
 export function useGameState(): UseGameStateReturn {
@@ -176,6 +178,8 @@ export function useGameState(): UseGameStateReturn {
 
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [isAIThinking, setIsAIThinking] = useState(false);
+  const [lastActiveId, setLastActiveId] = useState<string | null>(null);
+  const lastActiveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handNumberForChatRef = useRef(gameState.handNumber);
   useEffect(() => {
@@ -230,6 +234,10 @@ export function useGameState(): UseGameStateReturn {
         const ctx = buildAIContext(state, activePlayer, profile.personality);
         const action = decideAIAction(ctx);
         pushChat(activePlayer.id, activePlayer.name, profile.personality, action.type);
+        // Keep this player's panel highlighted while their dialogue is visible
+        setLastActiveId(activePlayer.id);
+        if (lastActiveTimerRef.current) clearTimeout(lastActiveTimerRef.current);
+        lastActiveTimerRef.current = setTimeout(() => setLastActiveId(null), 1500);
         gameRef.current.applyAction(action);
       } catch {
         // guard against stale state
@@ -254,6 +262,8 @@ export function useGameState(): UseGameStateReturn {
     gameRef.current.startHand();
     setChatMessages([]);
     setIsAIThinking(false);
+    setLastActiveId(null);
+    if (lastActiveTimerRef.current) clearTimeout(lastActiveTimerRef.current);
     setGameState({ ...gameRef.current.getState() });
   }, []);
 
@@ -326,5 +336,6 @@ export function useGameState(): UseGameStateReturn {
     humanAction,
     latestExpressions,
     restartGame,
+    lastActiveId,
   };
 }

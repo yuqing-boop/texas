@@ -31,6 +31,7 @@ interface GameTableProps {
   latestExpressions: Record<string, ExpressionType>;
   onAction: (action: PlayerAction) => void;
   onNewGame: () => void;
+  lastActiveId: string | null;
 }
 
 function profileFor(id: string) {
@@ -50,6 +51,7 @@ export function GameTable({
   latestExpressions,
   onAction,
   onNewGame,
+  lastActiveId,
 }: GameTableProps) {
   const {
     players,
@@ -124,7 +126,7 @@ export function GameTable({
           key={p.id}
           player={p}
           isHuman={false}
-          isActive={idx === activePlayerIndex}
+          isActive={idx === activePlayerIndex || p.id === lastActiveId}
           isDealer={idx === dealerIndex}
           revealCards={revealAll}
           aiProfile={prof}

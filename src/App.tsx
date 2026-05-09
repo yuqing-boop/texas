@@ -35,6 +35,7 @@ function App() {
     humanAction,
     latestExpressions,
     restartGame,
+    lastActiveId,
   } = useGameState();
 
   useReadymag(gameState, HUMAN_ID);
@@ -78,6 +79,7 @@ function App() {
           latestExpressions={latestExpressions}
           onAction={humanAction}
           onNewGame={restartGame}
+          lastActiveId={lastActiveId}
         />
       </div>
     </div>

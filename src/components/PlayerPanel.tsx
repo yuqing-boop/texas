@@ -123,10 +123,9 @@ function ActionSideMarkContent({
     >
       {primary ? (
         <span
+          className="stat-note-line"
           style={{
-            fontSize: 12,
-            color: 'var(--text-panel)',
-            letterSpacing: 0.5,
+            fontSize: 13,
             textTransform: 'uppercase',
             lineHeight: 1.15,
           }}
@@ -136,13 +135,12 @@ function ActionSideMarkContent({
       ) : null}
       {amountLine && (
         <span
+          className="stat-note-line"
           style={{
             fontFamily: 'var(--font-arcade)',
-            fontSize: primary ? 9 : 8,
-            color: primary ? '#AAAAAA' : 'var(--text-panel)',
+            fontSize: primary ? 10 : 9,
             lineHeight: 1.1,
             textTransform: 'none' as const,
-            letterSpacing: 0.3,
           }}
         >
           {amountLine}
@@ -581,13 +579,15 @@ export function PlayerPanel({
           </div>
 
           {isHuman && player.currentBet > 0 && (
-            <div style={{ fontFamily: 'var(--font-arcade)', fontSize: 9, color: '#AAAAAA' }}>
+            <div className="stat-note-line" style={{ fontFamily: 'var(--font-arcade)', fontSize: 11 }}>
               BET ${player.currentBet}
             </div>
           )}
 
           {isHuman && player.allIn && !player.folded && (
-            <div style={{ fontSize: 10, color: '#FF8800' }}>ALL-IN</div>
+            <div className="stat-note-line" style={{ fontFamily: 'var(--font-pixel)', fontSize: 12 }}>
+              ALL-IN
+            </div>
           )}
 
           {isHuman && player.folded && (
@@ -595,10 +595,7 @@ export function PlayerPanel({
           )}
 
           {isHuman && isActive && !player.folded && !player.allIn && (
-            <div
-              className="blink"
-              style={{ fontSize: 10, color: '#00FFFF' }}
-            >
+            <div className="blink stat-note-line" style={{ fontFamily: 'var(--font-pixel)', fontSize: 13 }}>
               ▶ ACTING
             </div>
           )}

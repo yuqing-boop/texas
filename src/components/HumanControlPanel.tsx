@@ -61,6 +61,10 @@ export function HumanControlPanel({
     setRaiseAmount(sliderLow);
   }, [sliderLow]);
 
+  const showNewGameArrow = promptNewGame;
+  const showTurnPulse =
+    isActive && !player.folded && !player.allIn && !promptNewGame;
+
   return (
     <div
       className={[
@@ -70,6 +74,16 @@ export function HumanControlPanel({
         .filter(Boolean)
         .join(' ')}
     >
+      {showNewGameArrow && (
+        <div className="arcade-hint-arrow arcade-hint-arrow--new-game" aria-hidden>
+          <div className="arcade-hint-arrow__bob">
+            <span className="arcade-hint-arrow__stack arcade-hint-arrow__stack--down arcade-hint-arrow__stack--prominent">
+              <span className="arcade-hint-arrow__glyph">▼</span>
+              <span className="arcade-hint-arrow__glyph">▼</span>
+            </span>
+          </div>
+        </div>
+      )}
       <div
         className={[
           'human-control-panel-oval',
@@ -117,7 +131,7 @@ export function HumanControlPanel({
           className="human-control-stats-box"
           style={{
             width: '100%',
-            maxWidth: 240,
+            maxWidth: 280,
             borderStyle: 'solid',
             borderWidth: 'var(--bevel-outer)',
             borderColor: 'var(--win-dark) var(--win-light) var(--win-light) var(--win-dark)',
@@ -157,38 +171,43 @@ export function HumanControlPanel({
               </span>
             )}
             <span
+              className="stat-note-line"
               style={{
                 fontFamily: 'var(--font-arcade)',
                 fontSize: 12,
-                color: 'rgba(117, 34, 160, 1)',
               }}
             >
               ${player.chips.toLocaleString()}
             </span>
           </div>
           {player.currentBet > 0 && (
-            <div style={{ fontFamily: 'var(--font-arcade)', fontSize: 8, color: 'rgba(102, 102, 102, 1)' }}>
+            <div
+              className="stat-note-line"
+              style={{
+                fontFamily: 'var(--font-arcade)',
+                fontSize: 10,
+              }}
+            >
               BET ${player.currentBet}
             </div>
           )}
           {player.allIn && !player.folded && (
-            <div style={{ fontFamily: 'var(--font-pixel)', fontSize: 8, color: '#FF8800' }}>ALL-IN</div>
+            <div className="stat-note-line" style={{ fontFamily: 'var(--font-pixel)', fontSize: 12 }}>
+              ALL-IN
+            </div>
           )}
           {player.folded && (
             <div style={{ fontFamily: 'var(--font-pixel)', fontSize: 7, color: '#880000' }}>FOLDED</div>
           )}
           {isActive && !player.folded && !player.allIn && (
-            <div
-              className="blink"
-              style={{ fontFamily: 'var(--font-pixel)', fontSize: 10, color: 'rgba(211, 102, 163, 1)' }}
-            >
+            <div className="blink stat-note-line" style={{ fontFamily: 'var(--font-pixel)', fontSize: 12 }}>
               ▶ YOUR TURN
             </div>
           )}
         </div>
 
         <div
-          className={['human-control-slider-arc', 'human-control-slider-arc--embedded', !raiseSliderActive && 'human-control-slider-arc--inactive'].filter(Boolean).join(' ')}
+          className={['human-control-slider-arc', 'human-control-slider-arc--embedded', !raiseSliderActive && 'human-control-slider-arc--inactive', showTurnPulse && raiseSliderActive && 'slider-turn-pulse'].filter(Boolean).join(' ')}
         >
           <span
             className="human-control-slider-arc__label"
@@ -231,14 +250,18 @@ export function HumanControlPanel({
               alignItems: 'flex-start',
               gap: 6,
               padding: '4px 0 8px',
+              width: '100%',
+              maxWidth: 280,
+              boxSizing: 'border-box',
             }}
           >
             <div
+              className="stat-note-line"
               style={{
                 fontFamily: 'var(--font-pixel)',
-                fontSize: 8,
-                color: 'rgba(41, 0, 0, 1)',
+                fontSize: 12,
                 textAlign: 'left',
+                whiteSpace: 'nowrap',
               }}
             >
               BUSTED — NO CHIPS LEFT
@@ -262,7 +285,7 @@ export function HumanControlPanel({
         <div className="human-control-actions-arc" aria-label="Check, fold, call, raise, and all-in">
           <button
             type="button"
-            className={['btn', 'btn-fold', !foldOk && 'human-control-action--unavailable'].filter(Boolean).join(' ')}
+            className={['btn', 'btn-fold', !foldOk && 'human-control-action--unavailable', showTurnPulse && foldOk && 'btn-turn-pulse'].filter(Boolean).join(' ')}
             disabled={!foldOk}
             onClick={() => foldOk && onAction({ type: 'fold' })}
           >
@@ -270,7 +293,7 @@ export function HumanControlPanel({
           </button>
           <button
             type="button"
-            className={['btn', 'btn-check', !checkOk && 'human-control-action--unavailable'].filter(Boolean).join(' ')}
+            className={['btn', 'btn-check', !checkOk && 'human-control-action--unavailable', showTurnPulse && checkOk && 'btn-turn-pulse'].filter(Boolean).join(' ')}
             disabled={!checkOk}
             onClick={() => checkOk && onAction({ type: 'check' })}
             title={checkOk ? 'Check (no bet to call)' : 'Not available: you cannot check now'}
@@ -279,7 +302,7 @@ export function HumanControlPanel({
           </button>
           <button
             type="button"
-            className={['btn', 'btn-call', !callOk && 'human-control-action--unavailable'].filter(Boolean).join(' ')}
+            className={['btn', 'btn-call', !callOk && 'human-control-action--unavailable', showTurnPulse && callOk && 'btn-turn-pulse'].filter(Boolean).join(' ')}
             disabled={!callOk}
             onClick={() => callOk && onAction({ type: 'call' })}
           >
@@ -287,7 +310,7 @@ export function HumanControlPanel({
           </button>
           <button
             type="button"
-            className={['btn', 'btn-raise', !raiseSliderActive && 'human-control-action--unavailable'].filter(Boolean).join(' ')}
+            className={['btn', 'btn-raise', !raiseSliderActive && 'human-control-action--unavailable', showTurnPulse && raiseSliderActive && 'btn-turn-pulse'].filter(Boolean).join(' ')}
             disabled={!raiseSliderActive}
             onClick={() => raiseSliderActive && onAction({ type: 'raise', amount: clampedRaise })}
           >
@@ -295,7 +318,7 @@ export function HumanControlPanel({
           </button>
           <button
             type="button"
-            className={['btn', 'btn-allin', !allinOk && 'human-control-action--unavailable'].filter(Boolean).join(' ')}
+            className={['btn', 'btn-allin', !allinOk && 'human-control-action--unavailable', showTurnPulse && allinOk && 'btn-turn-pulse'].filter(Boolean).join(' ')}
             disabled={!allinOk}
             onClick={() => allinOk && onAction({ type: 'all-in' })}
           >
